@@ -17,9 +17,9 @@
     {key:"epic",   label:"Epic",    cols:9, rows:8, meta:"8×7 boxes"},
   ];
   const AI_PROFILES = {
-    kid:    { name:"Milo",  tag:"The Whiz Kid",     blurb:"Energetic and fast early on — spams moves without much thought. Once the board fills up he turns strategic, though he's good for a mistake or two a game. Reacts with emoji a lot." },
-    woman:  { name:"Vera",  tag:"The Analyst",       blurb:"Calm and methodical. Works one row at a time, left to right, and almost never leaves you a free box. Thinks for a few seconds before every move. Never reacts with emoji." },
-    oldman: { name:"Leo",   tag:"The Grandmaster",   blurb:"The sharpest of the three. Always picks the safest move, and when forced to sacrifice, gives away as little as possible. Thinks it through, but won't keep you waiting. Reacts with emoji occasionally." },
+    kid:    { name:"Peter",  tag:"The Whiz Kid",     blurb:"Energetic and fast early on — spams moves without much thought. Once the board fills up he turns strategic, though he's good for a mistake or two a game. Reacts with emoji a lot." },
+    woman:  { name:"Natalie",  tag:"The Analyst",       blurb:"Calm and methodical. Works one row at a time, left to right, and almost never leaves you a free box. Thinks for a few seconds before every move. Never reacts with emoji." },
+    oldman: { name:"Hikaru",   tag:"The Grandmaster",   blurb:"The sharpest of the three. Always picks the safest move, and when forced to sacrifice, gives away as little as possible. Thinks it through, but won't keep you waiting. Reacts with emoji occasionally." },
   };
   const SPACING = 84;      // world units between dots
   const DOT_R = 6.5;

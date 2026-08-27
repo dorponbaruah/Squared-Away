@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Squared Away · Pass &amp; Play</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div id="app">
+    
+    <!-- ============ MAIN MENU ============ -->
+    <div id="mainMenu" class="screen">
+      <div class="grid-bg"></div>
+      <div class="home-glow"></div>
+      <div class="home-content">
+        <div class="home-title-wrap">
+          <h1 class="home-title">Squared<span>Away</span></h1>
+        </div>
+        <div class="menu-stack home-stack">
+          <button class="menu-card home-card" id="goPlayBtn" type="button">
+            <div class="ic">▶</div>
+            <div class="tt">Play</div>
+          </button>
+          <button class="menu-card home-card" id="goSettingsBtn" type="button">
+            <div class="ic">⚙</div>
+            <div class="tt">Settings</div>
+          </button>
+          <button class="menu-card home-card" id="goHowToBtn" type="button">
+            <div class="ic">?</div>
+            <div class="tt">How to Play</div>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ============ PLAY MENU ============ -->
+    <div id="playMenu" class="screen hidden">
+      <div class="grid-bg"></div>
+      <div class="card">
+        <div class="topline">
+          <button class="back-btn" id="playMenuBack" type="button">←</button>
+          <h2>Choose a mode</h2>
+        </div>
+        
+        <div class="resume-banner hidden" id="resumeBanner">
+          <div class="resume-info">
+            <div class="resume-title">Unfinished game</div>
+            <div class="resume-sub" id="resumeSub"></div>
+          </div>
+          <div class="resume-btns">
+            <button class="btn-primary-sm" id="resumeBtn" type="button">Resume</button>
+            <button class="btn-ghost-sm" id="discardBtn" type="button">Discard</button>
+          </div>
+        </div>
+        
+        <button class="mode-card" id="modePassPlay" type="button">
+          <div class="ic">👥</div>
+          <div class="tx">
+            <div class="tt">Pass &amp; Play</div>
+            <div class="ds">2–6 players, one phone passed around the table</div>
+          </div>
+        </button>
+        <button class="mode-card" id="modeVsAI" type="button">
+          <div class="ic">🎮</div>
+          <div class="tx">
+            <div class="tt">VS AI</div>
+            <div class="ds">Play solo against an AI opponent</div>
+          </div>
+        </button>
+      </div>
+    </div>
+    
+    <!-- ============ PASS & PLAY SETUP ============ -->
+    <div id="passPlaySetup" class="screen hidden">
+      <div class="grid-bg"></div>
+      <div class="card">
+        <div class="topline">
+          <button class="back-btn" id="passSetupBack" type="button">←</button>
+          <h2>Pass &amp; Play</h2>
+        </div>
+        
+        <div class="section-label">Players</div>
+        <div class="stepper">
+          <div class="count"><span id="playerCountLabel">2</span><small>playing</small></div>
+          <div class="btns">
+            <button id="minusPlayer" type="button">−</button>
+            <button id="plusPlayer" type="button">+</button>
+          </div>
+        </div>
+        <div class="name-rows" id="nameRows"></div>
+        
+        <div class="section-label">Board size</div>
+        <div class="size-grid" id="sizeGrid"></div>
+        
+        <div class="section-label">Extras <span class="optional-tag">(optional)</span></div>
+        <div class="toggle-row">
+          <div class="toggle-item">
+            <div class="toggle-name">🟡🔷 Power Boxes</div>
+            <label class="switch">
+              <input type="checkbox" id="powerBoxesToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-name">⏱ Turn Timer (26s)</div>
+            <label class="switch">
+              <input type="checkbox" id="turnTimerToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        
+        <button class="start-btn" id="startBtn" type="button">Start game →</button>
+      </div>
+    </div>
+    
+    <!-- ============ VS AI SETUP ============ -->
+    <div id="vsAiSetup" class="screen hidden">
+      <div class="grid-bg"></div>
+      <div class="card">
+        <div class="topline">
+          <button class="back-btn" id="vsAiSetupBack" type="button">←</button>
+          <h2>VS AI</h2>
+        </div>
+        
+        <div class="section-label">Your name</div>
+        <input class="single-input" id="vsAiNameInput" maxlength="12" placeholder="You" autocomplete="off">
+        
+        <div class="section-label">Opponents <span class="optional-tag">(select who you want to play)</span></div>
+        <div class="ai-cards" id="aiCards"></div>
+        
+        <div class="section-label">Total players</div>
+        <div class="stepper">
+          <div class="count"><span id="vsAiCountLabel">2</span><small>playing</small></div>
+          <div class="btns">
+            <button id="minusVsAiPlayer" type="button">−</button>
+            <button id="plusVsAiPlayer" type="button">+</button>
+          </div>
+        </div>
+        
+        <div class="section-label">Board size</div>
+        <div class="size-grid" id="sizeGridAi"></div>
+        
+        <div class="section-label">Extras <span class="optional-tag">(optional)</span></div>
+        <div class="toggle-row">
+          <div class="toggle-item">
+            <div class="toggle-name">🟡🔷 Power Boxes</div>
+            <label class="switch">
+              <input type="checkbox" id="powerBoxesToggleAi" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-name">⏱ Turn Timer (26s)</div>
+            <label class="switch">
+              <input type="checkbox" id="turnTimerToggleAi">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        
+        <button class="start-btn" id="startAiBtn" type="button">Start game →</button>
+      </div>
+    </div>
+    
+    <!-- ============ SETTINGS ============ -->
+    <div id="settings" class="screen hidden">
+      <div class="grid-bg"></div>
+      <div class="card">
+        <div class="topline">
+          <button class="back-btn" id="settingsBack" type="button">←</button>
+          <h2>Settings</h2>
+        </div>
+        
+        <div class="section-label">Sound</div>
+        <div class="toggle-row">
+          <div class="toggle-item">
+            <div>
+              <div class="toggle-name">🔊 Sound Effects</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="soundToggle" checked><span class="slider"></span></label>
+          </div>
+          <div class="toggle-item">
+            <div>
+              <div class="toggle-name">📳 Haptics</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="hapticsToggle" checked><span class="slider"></span></label>
+          </div>
+        </div>
+        
+        <div class="section-label">Color theme</div>
+        <div class="theme-grid" id="themeGrid"></div>
+        
+        <div class="section-label">Data</div>
+        <button class="danger-btn" id="resetDataBtn" type="button">Reset saved game</button>
+      </div>
+    </div>
+    
+    <!-- ============ HOW TO PLAY ============ -->
+    <div id="howToPlay" class="screen hidden">
+      <div class="grid-bg"></div>
+      <div class="card">
+        <div class="topline">
+          <button class="back-btn" id="howToPlayBack" type="button">←</button>
+          <h2>How to Play</h2>
+        </div>
+        <div class="rules-box show">
+          Take turns dragging between two neighboring dots to draw one line — up, down, left or right, never diagonal.
+          Watch out: if you draw the <b>third side</b> of a box, you're handing it to the next player.
+          Complete a box and it's claimed with your initial, <b>plus you go again</b> — chain several in one turn if you can.
+          When every line is drawn, whoever claimed the most boxes wins.
+          <br><br>
+          <b>Power boxes</b> glow before anyone claims them. Finish one and you trigger its bonus:
+          <br>🟡 <b>Gold</b> — that box scores double.
+          <br>🔷 <b>Sapphire</b> — banks one extra move for later in your turn.
+          <br><br>
+          <b>VS AI</b>: tap ⓘ on an opponent's card to read how they play.
+          <br><br>
+          If the <b>turn timer</b> is on and it runs out, you're eliminated — the game continues without you.
+        </div>
+      </div>
+    </div>
+    
+    <!-- ============ INFO MODAL ============ -->
+    <div id="infoModal" class="screen hidden" style="background:rgba(8,9,11,.6); z-index:20;">
+      <div class="card" style="max-width:340px;">
+        <div class="topline">
+          <h2 id="infoModalTitle" style="flex:1;">Info</h2>
+          <button class="back-btn" id="infoModalClose" type="button">✕</button>
+        </div>
+        <p id="infoModalBody" style="font-size:13px; line-height:1.55; color:#57503c; margin:0;"></p>
+      </div>
+    </div>
+    
+    <!-- ============ GAME ============ -->
+    <div id="game" class="screen hidden">
+      <canvas id="board"></canvas>
+      <div class="turn-glow" id="turnGlow"></div>
+      <div class="danger-overlay" id="dangerOverlay"></div>
+      <div class="timer-bar hidden" id="timerBar">
+        <div class="timer-fill" id="timerFill"></div>
+      </div>
+      <div class="topbar">
+        <button class="icon-btn" id="menuBtn" title="Back to menu">☰</button>
+        <button class="icon-btn" id="restartBtn" title="Restart game">↻</button>
+        <div class="score-strip" id="scoreStrip"></div>
+        <button class="icon-btn" id="fitBtn" title="Fit to screen">⤢</button>
+      </div>
+      <div class="toast" id="toast"></div>
+      <div class="combo-banner" id="comboBanner"></div>
+      <div class="thinking-chip" id="thinkingChip">
+        <div class="av" id="thinkingAv"></div>
+        <span id="thinkingName"></span>
+        <span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span>
+      </div>
+      <div class="react-picker hidden" id="reactPicker">
+        <button data-emoji="😤" type="button">😤</button>
+        <button data-emoji="🔥" type="button">🔥</button>
+        <button data-emoji="😂" type="button">😂</button>
+        <button data-emoji="👏" type="button">👏</button>
+        <button data-emoji="😱" type="button">😱</button>
+      </div>
+      <div class="bottombar">
+        <button class="icon-btn" id="reactToggleBtn">😊</button>
+        <button class="icon-btn" id="zoomOutBtn">−</button>
+        <button class="icon-btn" id="zoomInBtn">+</button>
+      </div>
+    </div>
+    
+    <!-- ============ GAME OVER ============ -->
+    <!-- ============ CONFIRMATION ============ -->
+    <div id="confirmModal" class="screen hidden confirm-overlay">
+      <div class="confirm-card">
+        <div class="confirm-icon" id="confirmIcon">?</div>
+        <h2 id="confirmTitle">Are you sure?</h2>
+        <p id="confirmBody"></p>
+        <div class="result-btns">
+          <button class="btn-secondary" id="confirmCancelBtn" type="button">Cancel</button>
+          <button class="btn-primary" id="confirmOkBtn" type="button">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="gameover" class="screen hidden">
+      <div class="result-card">
+        <div class="trophy">🏆</div>
+        <h2 id="resultTitle">Game over</h2>
+        <p id="resultSub">Final score</p>
+        <div class="final-rows" id="finalRows"></div>
+        <div class="result-btns">
+          <button class="btn-secondary" id="rematchBtn">Rematch</button>
+          <button class="btn-primary" id="newGameBtn">Main menu</button>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <script src="js/constants.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/avatars.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/setup-ui.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

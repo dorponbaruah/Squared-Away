@@ -85,15 +85,109 @@
     });
     return best[Math.floor(Math.random()*best.length)];
   }
-  function womanPreferredMove(safeMoves){
-    const horiz = safeMoves.filter(m=>m.horizontal);
-    if(horiz.length>0){
-      const minRow = Math.min(...horiz.map(m=>m.r));
-      const rowMoves = horiz.filter(m=>m.r===minRow).sort((x,y)=>x.c-y.c);
-      return rowMoves[0];
+  // Vera is methodical, but she should not blindly march across the board.
+  // She prefers building a row while continuously checking whether the move
+  // creates a useful position or quietly hands the opponent a trap.
+  function simulateEdgeState(m){
+    const h = G.hEdges.map(row=>row.map(e=>!!e));
+    const v = G.vEdges.map(row=>row.map(e=>!!e));
+    if(m.horizontal) h[m.r][m.c]=true;
+    else v[m.r][m.c]=true;
+    return {h,v};
+  }
+  function stateSides(h,v,r,c){
+    return (h[r][c]?1:0)+(h[r+1][c]?1:0)+(v[r][c]?1:0)+(v[r][c+1]?1:0);
+  }
+  function stateLegalMoves(h,v){
+    const out=[];
+    for(let r=0;r<G.rows;r++) for(let c=0;c<G.cols-1;c++)
+      if(!h[r][c]) out.push({horizontal:true,r,c});
+    for(let r=0;r<G.rows-1;r++) for(let c=0;c<G.cols;c++)
+      if(!v[r][c]) out.push({horizontal:false,r,c});
+    return out;
+  }
+  function stateCompletions(h,v,m){
+    const boxes = [];
+    if(m.horizontal){
+      if(m.r>0) boxes.push([m.r-1,m.c]);
+      if(m.r<G.rows-1) boxes.push([m.r,m.c]);
+    }else{
+      if(m.c>0) boxes.push([m.r,m.c-1]);
+      if(m.c<G.cols-1) boxes.push([m.r,m.c]);
     }
-    const vert = safeMoves.filter(m=>!m.horizontal).sort((x,y)=> x.r-y.r || x.c-y.c);
-    return vert[0];
+    return boxes.filter(([r,c])=>r<G.rows-1 && c<G.cols-1 && stateSides(h,v,r,c)===3).length;
+  }
+  function stateSafe(h,v,m){
+    const boxes=[];
+    if(m.horizontal){
+      if(m.r>0) boxes.push([m.r-1,m.c]);
+      if(m.r<G.rows-1) boxes.push([m.r,m.c]);
+    }else{
+      if(m.c>0) boxes.push([m.r,m.c-1]);
+      if(m.c<G.cols-1) boxes.push([m.r,m.c]);
+    }
+    return boxes.every(([r,c])=>{
+      if(r<0 || c<0 || r>=G.rows-1 || c>=G.cols-1) return true;
+      const n=stateSides(h,v,r,c);
+      return n<2 || n===3;
+    });
+  }
+  function countThreats(h,v){
+    let threats=0, dangerous=0;
+    for(let r=0;r<G.rows-1;r++) for(let c=0;c<G.cols-1;c++){
+      const n=stateSides(h,v,r,c);
+      if(n===2) threats++;
+      if(n===3) dangerous++;
+    }
+    return {threats,dangerous};
+  }
+  function rowProgress(m){
+    // Horizontal lines are Vera's preferred way to build a row, but progress
+    // is measured locally rather than by simply choosing the smallest row.
+    if(m.horizontal){
+      let score=18-m.r*1.8;
+      const left = m.c>0 && G.hEdges[m.r][m.c-1];
+      const right = m.c<G.cols-2 && G.hEdges[m.r][m.c+1];
+      if(left) score+=7;
+      if(right) score+=7;
+      return score;
+    }
+    return 7-m.r*1.2;
+  }
+  function womanPreferredMove(safeMoves){
+    if(safeMoves.length===1) return safeMoves[0];
+
+    let bestScore=-Infinity, best=[];
+    safeMoves.forEach(m=>{
+      const {h,v}=simulateEdgeState(m);
+      const legal=stateLegalMoves(h,v);
+      const immediate=stateCompletions(h,v,m);
+      const threats=countThreats(h,v);
+
+      // Look one opponent move ahead. If our safe move creates a position
+      // where the opponent can immediately take boxes, Vera heavily dislikes it.
+      let opponentBestGain=0;
+      let opponentForcedRisk=0;
+      for(const om of legal){
+        const gain=stateCompletions(h,v,om);
+        if(gain>opponentBestGain) opponentBestGain=gain;
+        if(!stateSafe(h,v,om)) opponentForcedRisk++;
+      }
+
+      let score=rowProgress(m);
+      score += immediate*60;
+      score -= opponentBestGain*42;
+      score -= threats.threats*1.8;
+      score -= threats.dangerous*8;
+      // Prefer moves that leave several genuinely safe replies. This makes
+      // her harder to bait into a long forced chain.
+      score += Math.min(opponentForcedRisk,8)*1.2;
+      score += Math.random()*2.5; // small natural variation; same style, less robotic
+
+      if(score>bestScore+0.01){ bestScore=score; best=[m]; }
+      else if(Math.abs(score-bestScore)<=0.01) best.push(m);
+    });
+    return best[Math.floor(Math.random()*best.length)];
   }
   function chooseAIMove(player){
     const moves = getAllLegalMoves();
